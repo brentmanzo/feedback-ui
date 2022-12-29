@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
+import Header from "./component/Header";
+import FeedbackList from "./component/FeedbackList";
+import FeedbackData from "./data/FeedbackData";
+import FeedbackStats from "./component/FeedbackStats";
+import FeedbackForm from "./component/FeedbackForm";
 
 function App() {
+  const [feedback, setFeedback] = useState(FeedbackData);
+
+  const addFeedback = (newFeedback) => {
+    newFeedback.id = uuidv4();
+    setFeedback([newFeedback, ...feedback]);
+  };
+
+  const deleteFeedback = (id) => {
+    if (window.confirm("Are you sure you want to delete?")) {
+      setFeedback(feedback.filter((item) => item.id !== id));
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+      <div className="container">
+        <FeedbackForm handleAdd={addFeedback} />
+        <FeedbackStats feedback={feedback} />
+        <FeedbackList feedback={feedback} handleDelete={deleteFeedback} />
+      </div>
+    </>
   );
 }
 
